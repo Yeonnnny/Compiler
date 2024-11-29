@@ -1,5 +1,4 @@
 // 구조체 테스트
-
 struct person {
     int id;
     char name[20];
