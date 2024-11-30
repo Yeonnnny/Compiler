@@ -4,7 +4,7 @@ typedef long YYSTYPE;
 
 #include "type.h"
 
-extern A_TYPE *int_type, *float_type, *char_type, *string_type, *void_type; 
+//extern A_TYPE *int_type, *float_type, *char_type, *string_type, *void_type; 
 
 // 신택스 분석 관연 전역 변수
 extern int line_no;		// 라인 번호를 위한 변수
@@ -12,12 +12,10 @@ extern int syntax_err;		// 신택스 에러 횟수 저장을 위한 변수
 extern A_NODE *root;		// 시작 노드
 extern A_ID *current_id;	// 현재 가리키고 있는 심볼테이블 주소 
 extern int current_level;	// 스코프를 위한 레벨값에 대한 변수
+extern A_TYPE *int_type; 
 
 // 시멘틱 분석 관련 전역 변수
-extern int global_address;
 extern int semantic_err;
-extern int literal_no;
-extern int literal_size;
 
 void yyerror(const char *);
 int yylex(); 

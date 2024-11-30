@@ -1,9 +1,10 @@
 #include "type.h"
+#include <stdlib.h> // atof() 함수 사용을 위한 헤더 파일
+#include <stdio.h>  // printf() 함수 사용을 위한 헤더 파일
 
 #define LIT_MAX 100
 
-A_TYPE *int_type, *float_type, *char_type, *string_type, *void_type;
-A_NODE *root;
+extern A_TYPE *int_type, *float_type, *char_type, *string_type, *void_type;
 
 int global_address = 12;	// 전역 변수의 시작 주소
 int semantic_err = 0;		// 시멘틱 오류 개수 저장
@@ -15,7 +16,6 @@ int literal_size = 0;		// 리터럴의 총 크기
 
 // =============== 시멘틱 분석 함수 프로토타입 ==================
 
-float atof();				// 문자열을 실수로 변환하는 함수성
 void semantic_analysis(A_NODE *);	// 시멘틱 분석 시작점
 void set_literal_address(A_NODE *);	// 리터럴의 주소 설정
 int put_literal(A_LITERAL, int);	// 리터럴 테이블에 리터럴 추가
@@ -59,7 +59,6 @@ BOOLEAN isVoidType(A_TYPE *);		// void 타입인지 확인
 A_LITERAL checkTypeAndConvertLiteral(A_LITERAL,A_TYPE*, int); // 리터럴의 타입 변환 검사
 A_LITERAL getTypeAndValueOfExpression(A_NODE *); // 표현식의 타입과 값을 가져오기
 
-//void setTypeSize(A_TYPE *, int);
 void semantic_error(int, int, char *);	// 시멘틱 오류 출력
 void semantic_warning(int, int);	// 시멘틱 경고 출력
 
@@ -68,6 +67,7 @@ A_TYPE *makeType(T_KIND);			// 새로운 타입 생성
 A_NODE *makeNode(NODE_NAME, A_NODE *, A_NODE *,A_NODE *); // 새로운 노드 생성
 
 //===================================================================
+
 
 /*
   시멘틱 분석 시작 함수
@@ -103,19 +103,22 @@ void sem_program(A_NODE *node)
 
 int put_literal(A_LITERAL lit, int ll)
 {
-    float ff;
     if (literal_no >=LIT_MAX)
         semantic_error(93, ll, NIL);
     else
         literal_no++;
+
     literal_table[literal_no]=lit;
     literal_table[literal_no].addr=literal_size;
+
     if (lit.type->kind==T_ENUM)
         literal_size += 4;
     else if (isStringType(lit.type))
         literal_size += strlen(lit.value.s)+1;
+
     if (literal_size%4)
         literal_size= literal_size/4*4+4;
+
     return(literal_no);
 }
 
@@ -157,7 +160,7 @@ A_TYPE *sem_expression(A_NODE *node)
             break;
         case N_EXP_FLOAT_CONST :
             lit.type = float_type;
-            lit.value.f = atof(node->clink); // 문자열을 실수로 변환
+            lit.value.f = atof((char *)node->clink); // 문자열을 실수로 변환
             node->clink = put_literal(lit, node->line); // 리터럴 테이블에 추가
             result = float_type;
             break;
@@ -1141,7 +1144,7 @@ A_LITERAL getTypeAndValueOfExpression(A_NODE *node)
             break;
         case N_EXP_FLOAT_CONST :
             result.type = float_type;
-            result.value.f = atof(node->clink);
+            result.value.f = atof((char *)node->clink);
             break;
         case N_EXP_STRING_LITERAL :
         case N_EXP_ARRAY :
@@ -1355,7 +1358,7 @@ void semantic_error(int i, int ll, char *s)
             printf("not permitted type conversion in argument\n");
             break;
         case 60:
-            printf("expression is not an Ivalue \n");
+            printf("expression is not an lvalue \n");
             break;
         case 71:
             printf("case label not within a switch statement \n");
