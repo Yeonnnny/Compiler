@@ -8,6 +8,7 @@ extern A_TYPE *int_type, *float_type, *char_type, *string_type, *void_type;
 
 int global_address = 12;	// 전역 변수의 시작 주소
 int semantic_err = 0;		// 시멘틱 오류 개수 저장
+//extern int semantic_err;
 
 A_LITERAL literal_table[LIT_MAX]; // 리터럴 테이블 선언
 
@@ -996,7 +997,7 @@ BOOLEAN isFloatType(A_TYPE *t)
 
 BOOLEAN isArithmeticType(A_TYPE *t)
 {
-    if (t && t-> kind == T_ENUM)
+    if (t && t->kind == T_ENUM)
         return(TRUE);
     else
         return(FALSE);
@@ -1004,7 +1005,7 @@ BOOLEAN isArithmeticType(A_TYPE *t)
 
 BOOLEAN isScalarType(A_TYPE *t)
 {
-    if (t && ((t-> kind==T_ENUM) || (t-> kind==T_POINTER)))
+    if (t && ((t->kind==T_ENUM) || (t-> kind==T_POINTER)))
         return(TRUE);
     else
         return(FALSE);
@@ -1020,7 +1021,7 @@ BOOLEAN isAnyIntegerType(A_TYPE *t)
 
 BOOLEAN isIntegralType(A_TYPE *t)
 {
-    if (t && t-> kind==T_ENUM && t!=float_type)
+    if (t && t->kind==T_ENUM && t!=float_type)
         return(TRUE);
     else
         return(FALSE);

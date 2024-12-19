@@ -19,6 +19,8 @@ char *stack_c;
 int syntax_err=0;
 int semantic_err=0;
 
+FILE *fout;
+
 int search_symbol();
 int search_opcode();
 void put_symbol();

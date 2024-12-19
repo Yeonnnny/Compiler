@@ -121,5 +121,17 @@ typedef enum op {OP_NULL, LOD,LDX,LDXB, LDA, LITI,
 	JPC,JPCR,JMP,JPT,JPTR,INT,INCI,INCF,DECI,DECF,SUP,CAL,ADDR,
 	RET, MINUSI,MINUSF,LDI,LDIB,POP} OPCODE;
 
+extern char *opcode_name[];
+
 typedef struct {OPCODE f; int l; int a;} INSTRUCTION;
+
+extern int t;             // 스택 탑
+extern int b;             // 베이스 레지스터
+extern int p;		  // 프로그램 카운터
+extern int hp;            // 힙 포인터
+extern int stack[STACK_MAX];
+extern float *stack_f;
+extern char *stack_c;
+extern INSTRUCTION code[CODE_MAX];
+
 

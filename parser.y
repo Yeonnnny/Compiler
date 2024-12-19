@@ -3,10 +3,10 @@
 typedef long YYSTYPE;
 
 #include "type.h"
+#include <stdio.h>
+#include <stddef.h>
 
-//extern A_TYPE *int_type, *float_type, *char_type, *string_type, *void_type; 
-
-// 신택스 분석 관연 전역 변수
+// 신택스 분석 관련 선언
 extern int line_no;		// 라인 번호를 위한 변수
 extern int syntax_err;		// 신택스 에러 횟수 저장을 위한 변수
 extern A_NODE *root;		// 시작 노드
@@ -14,8 +14,12 @@ extern A_ID *current_id;	// 현재 가리키고 있는 심볼테이블 주소
 extern int current_level;	// 스코프를 위한 레벨값에 대한 변수
 extern A_TYPE *int_type; 
 
-// 시멘틱 분석 관련 전역 변수
+// 시멘틱 분석 관련 선언
 extern int semantic_err;
+
+// 코드생성기 관련 선언
+extern FILE *yyin;
+FILE *fout;
 
 void yyerror(const char *);
 int yylex(); 
@@ -527,24 +531,53 @@ void yyerror(const char *s) {
     printf("line %d : %s near %s\n",line_no, s, yytext);
 }
 
+
+// main 변경
 // 메인 함수
-int main() {
-    
+void main(int argc, char *argv[])
+{
+	if (argc<2){
+		printf("source file not given\n");
+		exit(1);}
+		
+	if (strcmp(argv[1],"-o")==0)
+		if (argc>3)
+			if ((fout=fopen(argv[2],"w"))==NULL) {
+				printf("can not open output file: %s\n",argv[3]);
+				exit(1);}
+			else ;
+		else  { printf("out file not given\n");
+		exit(1);}
+	else if (argc==2)
+		if ((fout=fopen("a.asm","w"))==NULL) {
+			printf("can not open output file: a.asm\n");
+			exit(1);}
+			
+	if ((yyin=fopen(argv[argc-1],"r"))==NULL){
+		printf("can not open input file: %s\n",argv[argc-1]);
+		exit(1);}
+		
+	printf("\nstart syntax analysis\n");
+	
 	initialize();
-
+	
 	yyparse();
-
-	// 신택스 분석
-	if(syntax_err) exit(1);
-
-	print_ast(root);
-
-	// 시멘틱 분석
+	
+	if (syntax_err) exit(1);
+	
+	// print_ast(root);
+  
+	printf("\nstart semantic analysis\n");
+  
 	semantic_analysis(root);
+  
+	if (semantic_err) exit(1);
+  
+	// print_sem_ast(root);
 
-	if(semantic_err) exit(1);
-
-	print_sem_ast(root);
+	printf("start code generation\n");
+	code_generation(root);
 
 	exit(0);
+
 }

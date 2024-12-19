@@ -1,10 +1,21 @@
 #include "type.h"
-extern char *opcode_name[];
-extern INSTRUCTION code[];
-extern int stack[];
+//extern char *opcode_name[];
+//extern INSTRUCTION code[];
+//extern int stack[];
 
-extern	float *stack_f;
-extern	char *stack_c;
+//extern	float *stack_f;
+//extern	char *stack_c;
+
+int 	p=0,	// program counter
+	b=0,	// base register
+	t=-1,	// stack top register
+	hp=STACK_MAX; // heap pointer register
+
+int stack[STACK_MAX];
+float *stack_f = (float *)stack;
+char *stack_c = (char *)stack;
+INSTRUCTION code[CODE_MAX];
+
 void 	dump_stack();
 void 	runtime_error(int,int);
 int  	base(int);
@@ -13,10 +24,6 @@ void 	lib_printf();
 void 	lib_scanf();
 void 	lib_malloc();
 
-int 	p=0,	// program counter
-	b=0,	// base register
-	t=-1,	// stack top register
-	hp=STACK_MAX; // heap pointer register
 
 void dump_stack()
 {

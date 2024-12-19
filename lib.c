@@ -8,7 +8,7 @@ void lib_printf();
 void lib_scanf();
 void lib_malloc();
 
-void lib_malloc() 
+void lib_malloc()
 {
 	int j;
 	j=stack[t+3];
